@@ -13,6 +13,8 @@ type HashMap[V any] struct {
 	capacity int
 
 	loadFactor float32
+
+	Colliding int
 }
 
 func NewHashMap[V any](capacity int) *HashMap[V] {
@@ -37,6 +39,7 @@ func (hashMap *HashMap[V]) rehash() {
 	hashMap.table = make([]*l.LinkedList[n.NodeHash[string, V]], hashMap.capacity)
 
 	hashMap.size = 0
+	hashMap.Colliding = 0
 
 	for _, slot := range oldTable {
 		if slot == nil {
@@ -65,6 +68,8 @@ func (hashMap *HashMap[V]) Put(key string, value *V) *V {
 		hashMap.table[hashedKey] = l.NewLinkedList(func(a, b n.NodeHash[string, V]) bool {
 			return a.GetKey() == b.GetKey()
 		})
+	} else {
+		hashMap.Colliding = hashMap.Colliding + 1
 	}
 
 	list := hashMap.table[hashedKey]
