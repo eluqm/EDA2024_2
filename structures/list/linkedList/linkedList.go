@@ -2,6 +2,7 @@ package linkedlist
 
 import (
 	"errors"
+	"fmt"
 
 	nList "eda/structures/list/linkedList/nodeList"
 )
@@ -191,5 +192,19 @@ func (list *LinkedList[T]) ForEach(function func(*T, int)) {
 
 		currentNode = currentNode.GetNext()
 		index = index + 1
+	}
+}
+
+func (list *LinkedList[T]) Print() {
+	currentNode := list.head
+
+	if currentNode == nil {
+		fmt.Println("Empty list")
+		return
+	}
+
+	for currentNode != nil {
+		fmt.Println(*currentNode.GetData())
+		currentNode = currentNode.GetNext()
 	}
 }
