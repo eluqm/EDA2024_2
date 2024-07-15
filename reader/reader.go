@@ -8,7 +8,7 @@ import (
 )
 
 func ReadCSV(f func(*s.Song), max int) error {
-	file, err := os.Open("../data/data.csv")
+	file, err := os.Open("./data/data.csv")
 	if err != nil {
 		return err
 	}
