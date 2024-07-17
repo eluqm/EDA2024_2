@@ -5,10 +5,17 @@ import (
 	"encoding/csv"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 func ReadCSV(f func(*s.Song), max int) error {
-	file, err := os.Open("./data/data.csv")
+	pwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	path := filepath.Join(pwd, "data", "data.csv")
+
+	file, err := os.Open(path)
 	if err != nil {
 		return err
 	}
