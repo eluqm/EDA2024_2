@@ -1,10 +1,10 @@
 export namespace types {
 	
-	export class Song {
+	export class Result {
 	
 	
 	    static createFrom(source: any = {}) {
-	        return new Song(source);
+	        return new Result(source);
 	    }
 	
 	    constructor(source: any = {}) {
