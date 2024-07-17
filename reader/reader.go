@@ -15,6 +15,7 @@ func ReadCSV(f func(*s.Song), max int) error {
 	}
 	path := filepath.Join(pwd, "data", "data.csv")
 
+	// path := "../data/data.csv"
 	file, err := os.Open(path)
 	if err != nil {
 		return err
