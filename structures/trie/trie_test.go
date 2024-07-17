@@ -9,16 +9,11 @@ func TestMain(t *testing.T) {
 	trie := NewTrie[int]()
 
 	value1 := 1
-	value2 := 2
-	value3 := 3
-	value4 := 4
-	value5 := 5
 
-	trie.Add("hola", &value1)
-	trie.Add("holaawd", &value2)
-	trie.Add("holaawdawd", &value3)
-	trie.Add("holaawdawd", &value5)
-	trie.Add("holaawdawdawdawdw", &value4)
+	trie.Add("Love Lost", &value1)
+	trie.Add("C.R.E.A.M", &value1)
+
+	trie.Print()
 
 	suggests := trie.Suggest("holas")
 	if suggests == nil {

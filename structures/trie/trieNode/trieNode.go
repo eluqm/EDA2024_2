@@ -17,7 +17,9 @@ func NewTrieNode[T any](end bool, value *T, key byte) *TrieNode[T] {
 		return &a == &b
 	})
 
-	values.AddFirst(value)
+	if value != nil {
+		values.AddFirst(value)
+	}
 
 	return &TrieNode[T]{
 		childs: make([]*TrieNode[T], 27),
@@ -38,8 +40,12 @@ func (node *TrieNode[T]) GetInNode(bytes *[]byte, i int) *l.LinkedList[T] {
 		return nil
 	}
 
-	if len(*bytes) == i+1 && node.childs[key].end {
-		return node.childs[key].values
+	if len(*bytes) == i+1 {
+		if node.childs[key].end {
+			return node.childs[key].values
+		} else {
+			return nil
+		}
 	}
 
 	return node.childs[key].GetInNode(bytes, i+1)
@@ -142,7 +148,10 @@ func (node *TrieNode[T]) SearchPreFix(bytes *[]byte, i int) *TrieNode[T] {
 
 func (node *TrieNode[T]) GetAllChild(suggest *l.LinkedList[T]) {
 	if node.end {
-		//*suggest = append(*suggest, node)
+		if node.values == nil {
+			fmt.Println("enconte el error")
+			return
+		}
 		node.values.ForEach(func(v *T, i int) {
 			suggest.AddFirst(v)
 		})

@@ -210,6 +210,10 @@ func (list *LinkedList[T]) Print() {
 }
 
 func (list *LinkedList[T]) Parse() []T {
+	if list == nil {
+		return make([]T, 0)
+	}
+
 	currentNode := list.head
 
 	if currentNode == nil {
