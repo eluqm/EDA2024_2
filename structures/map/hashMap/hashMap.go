@@ -164,3 +164,18 @@ func (hashMap *HashMap[V]) GetCapacity() int {
 func (hashMap *HashMap[V]) GetBalance() float32 {
 	return float32(hashMap.size) / float32(hashMap.capacity)
 }
+
+func (hashMap *HashMap[V]) GetTable() []*l.LinkedList[n.NodeHash[string, V]] {
+	return hashMap.table
+}
+
+// crea un forEach
+func (hashMap *HashMap[V]) ForEach(f func(*n.NodeHash[string, V], int)) {
+	for _, slot := range hashMap.table {
+		if slot == nil {
+			continue
+		}
+
+		slot.ForEach(f)
+	}
+}
