@@ -79,7 +79,7 @@ func ClearWord(word string) string {
 			sb.WriteRune('ñ')
 		}
 
-		if i > (len(word)*2)/4 {
+		if i > (len(word)*3)/4 {
 			break
 		}
 	}
