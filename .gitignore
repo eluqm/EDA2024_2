@@ -1,2 +1,6 @@
 **/*.csv
 venv/
+
+build/bin
+node_modules
+frontend/dist
