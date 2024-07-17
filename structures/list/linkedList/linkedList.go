@@ -208,3 +208,20 @@ func (list *LinkedList[T]) Print() {
 		currentNode = currentNode.GetNext()
 	}
 }
+
+func (list *LinkedList[T]) Parse() []T {
+	currentNode := list.head
+
+	if currentNode == nil {
+		return nil
+	}
+
+	var result []T
+
+	for currentNode != nil {
+		result = append(result, *currentNode.GetData())
+		currentNode = currentNode.GetNext()
+	}
+
+	return result
+}
