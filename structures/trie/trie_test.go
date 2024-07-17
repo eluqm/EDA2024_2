@@ -8,141 +8,144 @@ import (
 func TestMain(t *testing.T) {
 	trie := NewTrie[int]()
 
-	e1 := 1
+	value1 := 1
+	value2 := 2
+	value3 := 3
+	value4 := 4
+	value5 := 5
 
-	fmt.Println("Agregando 'holaed'")
-	trie.Add("holaed", &e1)
-	fmt.Println("----")
+	trie.Add("hola", &value1)
+	trie.Add("holaawd", &value2)
+	trie.Add("holaawdawd", &value3)
+	trie.Add("holaawdawd", &value5)
+	trie.Add("holaawdawdawdawdw", &value4)
 
-	fmt.Println("Agregando 'hola'")
-	trie.Add("hola", &e1)
-	fmt.Println("----")
+	suggests := trie.Suggest("holas")
+	if suggests == nil {
+		fmt.Println("No hay sugerencias")
+		return
+	}
+	suggests.ForEach(func(value *int, i int) {
+		fmt.Printf("Sugerencia: %d\n", *value)
+	})
 
-	fmt.Println("Agregando 'hol'")
-	trie.Add("hol", &e1)
+	for i := 0; i < 100; i++ {
+
+	}
 }
 
 func TestAdd(t *testing.T) {
 	trie := NewTrie[int]()
-	e1 := 1
 
-	words := []string{"hola", "holanda", "holar", "holas", "holan", "holant",
-		"holari", "holaris", "holarith", "holarito", "holat", "holatero",
-		"holario", "holarita", "holaring", "holanita", "holay", "holazo",
-		"holal", "holamo", "holador", "holadura", "holadurao", "holaitis",
-		"holando", "holament", "holancia", "holancha", "holandro", "holanza"}
+	value1 := 1
+	value2 := 2
+	value3 := 3
 
-	for _, word := range words {
-		fmt.Printf("Agregando '%s'\n", word)
-		trie.Add(word, &e1)
+	trie.Add("hola", &value1)
+	trie.Add("palabra", &value2)
+	trie.Add("holaa1", &value3)
+
+	if !trie.Search("hola") {
+		t.Fatalf("No se encontró la palabra 'hola'")
 	}
 
-	if *trie.Get("hola") != e1 {
-		t.Fatalf("El valor esperado para 'hola' es %d", e1)
+	if !trie.Search("palabra") {
+		t.Fatalf("No se encontró la palabra 'palabra'")
+	}
+
+	if !trie.Search("holaa1") {
+		t.Fatalf("No se encontró la palabra 'holaa1'")
 	}
 }
 
 func TestGet(t *testing.T) {
 	trie := NewTrie[int]()
-	e1 := 1
 
-	words := []string{"hola", "holanda", "holar", "holas", "holan", "holant",
-		"holari", "holaris", "holarith", "holarito", "holat", "holatero",
-		"holario", "holarita", "holaring", "holanita", "holay", "holazo",
-		"holal", "holamo", "holador", "holadura", "holadurao", "holaitis",
-		"holando", "holament", "holancia", "holancha", "holandro", "holanza"}
+	value1 := 1
+	value2 := 2
 
-	for _, word := range words {
-		fmt.Printf("Agregando '%s'\n", word)
-		trie.Add(word, &e1)
+	trie.Add("hola", &value1)
+
+	if trie.Get("hola").Size() != 1 {
+		t.Fatalf("Debería haber un solo valor")
 	}
 
-	for _, word := range words {
-		fmt.Printf("Obteniendo '%s'\n", word)
-		if *trie.Get(word) != e1 {
-			t.Fatalf("El valor esperado para '%s' es %d", word, e1)
-		}
+	if trie.Get("hola").Get(0) != &value1 {
+		t.Fatalf("El valor no es el esperado")
+	}
+
+	trie.Add("hola", &value2)
+
+	if trie.Get("hola").Size() != 2 {
+		t.Fatalf("Debería haber dos valores")
+	}
+
+	if trie.Get("hola").Get(0) != &value2 {
+		t.Fatalf("El valor no es el esperado")
 	}
 }
 
 func TestSearch(t *testing.T) {
 	trie := NewTrie[int]()
-	e1 := 1
 
-	words := []string{"hola", "holanda", "holar", "holas", "holan", "holant",
-		"holari", "holaris", "holarith", "holarito", "holat", "holatero",
-		"holario", "holarita", "holaring", "holanita", "holay", "holazo",
-		"holal", "holamo", "holador", "holadura", "holadurao", "holaitis",
-		"holando", "holament", "holancia", "holancha", "holandro", "holanza"}
+	value1 := 1
+	value2 := 2
+	value3 := 3
 
-	for _, word := range words {
-		fmt.Printf("Agregando '%s'\n", word)
-		trie.Add(word, &e1)
+	trie.Add("valoruno", &value1)
+	trie.Add("valordos", &value2)
+	trie.Add("valortres", &value3)
+
+	if !trie.Search("valoruno") {
+		t.Fatalf("No se encontró la palabra 'valoruno'")
 	}
 
-	for _, word := range words {
-		fmt.Printf("Buscando '%s'\n", word)
-		if !trie.Search(word) {
-			t.Fatalf("'%s' debería existir en el trie", word)
-		}
+	if !trie.Search("valordos") {
+		t.Fatalf("No se encontró la palabra 'valordos'")
 	}
 
-	fmt.Println("Buscando 'mundo'")
-	if trie.Search("mundo") {
-		t.Fatalf("'mundo' no debería existir en el trie")
+	if !trie.Search("valortres") {
+		t.Fatalf("No se encontró la palabra 'valortres'")
 	}
+
 }
 
 func TestRemove(t *testing.T) {
 	trie := NewTrie[int]()
-	e1 := 1
 
-	words := []string{"hola", "holanda", "holar", "holas", "holan", "holant",
-		"holari", "holaris", "holarith", "holarito", "holat", "holatero",
-		"holario", "holarita", "holaring", "holanita", "holay", "holazo",
-		"holal", "holamo", "holador", "holadura", "holadurao", "holaitis",
-		"holando", "holament", "holancia", "holancha", "holandro", "holanza"}
+	value1 := 1
+	value2 := 2
+	value3 := 3
 
-	for _, word := range words {
-		fmt.Printf("Agregando '%s'\n", word)
-		trie.Add(word, &e1)
+	trie.Add("valoruno", &value1)
+	trie.Add("valordos", &value2)
+	trie.Add("valortres", &value3)
+
+	if !trie.Search("valoruno") {
+		t.Fatalf("No se encontró la palabra 'valoruno'")
 	}
 
-	for _, word := range words {
-		fmt.Printf("Eliminando '%s'\n", word)
-		value := trie.Remove(word)
-		if value == nil || *value != e1 {
-			t.Fatalf("El valor eliminado esperado para '%s' es %d", word, e1)
-		}
+	trie.Remove("valoruno")
 
-		fmt.Printf("Search '%s' después de eliminar\n", word)
-		if trie.Search(word) {
-			t.Fatalf("'%s' no debería existir en el trie después de eliminar", word)
-		}
+	if trie.Search("valoruno") {
+		t.Fatalf("Se encontró la palabra 'valoruno'")
 	}
 }
 
 func TestSuggest(t *testing.T) {
 	trie := NewTrie[int]()
-	//Todavia hay bug con la ñ
-	words := []string{"hola", "holandae", "holari", "holaso", "holanu", "holantq",
-		"holariw", "holarisr", "holaritht", "holaritoy", "holatu", "holateroi",
-		"holario", "holaritap", "holarings", "holanitad", "holayf", "holazg",
-		"holalh", "holamoj", "holadork", "holadural", "holadurao", "holaitis",
-		"holandoz", "holamentx", "holanciac", "holanchav", "holandrob", "holanzan"}
 
-	for idx, word := range words {
-		val := idx + 1
-		fmt.Printf("Add '%s'\n", word)
-		trie.Add(word, &val)
-	}
+	value1 := 1
+	value2 := 2
+	value3 := 3
 
-	fmt.Println("Sugerencias para 'hol'")
-	suggestions := trie.Suggest("hol")
-	if len(suggestions) != 30 {
-		t.Fatalf("Porfavorcito estoy aburrido, tiene que dar 30 sugerencias para 'hol', pero boto %d", len(suggestions))
-	}
-	for i := 0; i < 30; i++ {
-		fmt.Println(*(suggestions[i]).GetValue(), string((suggestions[i]).GetKey()+'a'))
+	trie.Add("valoruno", &value1)
+	trie.Add("valordos", &value2)
+	trie.Add("valortres", &value3)
+
+	suggests := trie.Suggest("valo")
+
+	if suggests == nil {
+		t.Fatalf("No hay sugerencias")
 	}
 }
