@@ -1,8 +1,10 @@
 package trie
 
 import (
+	l "eda/structures/list/linkedList"
+	n "eda/structures/trie/trieNode"
+	"fmt"
 	"strings"
-	n "trie/trienode"
 )
 
 type Trie[T any] struct {
@@ -15,7 +17,7 @@ func NewTrie[T any]() *Trie[T] {
 	}
 }
 
-func (trie Trie[T]) Get(str string) *T {
+func (trie Trie[T]) Get(str string) *l.LinkedList[T] {
 	bytes := convertToBytes(str)
 	return trie.root.GetInNode(&bytes, 0)
 }
@@ -31,40 +33,44 @@ func (trie Trie[T]) Search(str string) bool {
 }
 
 func convertToBytes(str string) []byte {
-	contador := 0
-	bytes := []byte(strings.ToLower(str))
-	for _, b := range bytes {
-		if b == ' ' {
-			contador++
+	var sb strings.Builder
+
+	for i, l := range str {
+		if l >= 'a' && l <= 'z' {
+			sb.WriteRune(l - 'a')
+		} else if l == 164 {
+			sb.WriteRune('n' - 'a')
+		}
+
+		if i > (len(str)*2)/4 {
+			break
 		}
 	}
-	response := make([]byte, len(bytes)-contador)
-	j := 0
-	for i, b := range bytes {
-		if b == ' ' {
-			continue
-		}
-		response[j] = bytes[i] - 'a'
-		j++
-	}
-	return response
+	return []byte(sb.String())
 }
 
-func (trie *Trie[T]) Remove(str string) *T {
+func (trie *Trie[T]) Remove(str string) *l.LinkedList[T] {
 	bytes := convertToBytes(str)
 	return trie.root.RemoveInNode(&bytes, 0)
 }
 
-func (trie *Trie[T]) Suggest(str string) []*n.TrieNode[T] {
+func (trie *Trie[T]) Suggest(str string) *l.LinkedList[T] {
 	bytes := convertToBytes(str)
 	node := trie.root.SearchPreFix(&bytes, 0)
 
 	if node == nil {
+		fmt.Println("No hay sugerencias dentro")
 		return nil
 	}
 
-	suggestSlice := make([]*n.TrieNode[T], 0)
-	node.GetAllChild(&suggestSlice)
+	suggestSlice := l.NewLinkedList(func(a, b T) bool {
+		return false
+	})
+	node.GetAllChild(suggestSlice)
 
 	return suggestSlice
+}
+
+func (trie *Trie[T]) Print() {
+	trie.root.Print(0)
 }
