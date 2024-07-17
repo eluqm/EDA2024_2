@@ -3,17 +3,17 @@ package main
 import (
 	ix "eda/structures/invertIndex"
 	s "eda/types"
+	"time"
 
-	// import trietree "eda/structures/trie"
+	t "eda/structures/trie"
 	// import bplustree "eda/structures/bplus"
 	"context"
 	rd "eda/reader"
-	"fmt"
 )
 
 type App struct {
 	InvertIndex *ix.InvertIndex[s.Song]
-	// Trie *trietree.Trie[s.Song]
+	Trie        *t.Trie[s.Song]
 	// Bplus *bplustree.Bplus[s.Song]
 	ctx context.Context
 }
@@ -26,13 +26,13 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 
 	a.InvertIndex = ix.NewInvertIndex[s.Song](2000)
-	// a.Trie = trietree.NewTrie()
+	a.Trie = t.NewTrie[s.Song]()
 	// a.Bplus = bplustree.NewBplus()
 
 	f := func(s *s.Song) {
 		name := s.TrackName
 		a.InvertIndex.PutMany(name, s)
-		// a.Trie.Add(name, s)
+		a.Trie.Add(name, s)
 		// a.Bplus.Add(name, s)
 	}
 
@@ -42,16 +42,41 @@ func (a *App) startup(ctx context.Context) {
 	}
 }
 
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
-}
-
-func (a *App) SearchSong(name string) []s.Song {
+func (a *App) SearchSongInIndexInvert(name string) s.Result {
+	start := time.Now()
 	lists := a.InvertIndex.Search(name)
 
-	if len(lists) > 1000 {
-		return lists[:1000]
+	timeLapse := float32(time.Since(start).Microseconds()) / 1000
+
+	size := len(lists)
+
+	if len(lists) > 500 {
+		lists = lists[:500]
 	}
 
-	return lists
+	return s.Result{
+		TimeLapse: timeLapse,
+		Songs:     lists,
+		Size:      size,
+	}
+}
+
+func (a *App) SearchSongInTrie(name string) s.Result {
+	start := time.Now()
+
+	lists := a.Trie.Suggest(name).Parse()
+
+	timeLapse := float32(time.Since(start).Microseconds()) / 1000
+
+	size := len(lists)
+
+	if len(lists) > 500 {
+		lists = lists[:500]
+	}
+
+	return s.Result{
+		TimeLapse: timeLapse,
+		Songs:     lists,
+		Size:      size,
+	}
 }
