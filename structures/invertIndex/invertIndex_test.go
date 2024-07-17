@@ -1,6 +1,7 @@
 package invertindex
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -46,6 +47,11 @@ func TestInvertIndex(t *testing.T) {
 	if !index.IsEmpty() {
 		t.Error("Expected index to be empty")
 	}
+}
+
+func TestClearWord(t *testing.T) {
+	str := ClearWord("")
+	fmt.Println(str, len(str))
 }
 
 // crea test para cada funcion

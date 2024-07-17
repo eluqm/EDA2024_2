@@ -3,6 +3,7 @@ package invertindex
 import (
 	l "eda/structures/list/linkedList"
 	h "eda/structures/map/hashMap"
+	nodehash "eda/structures/map/hashMap/nodeHash"
 	"fmt"
 	"strings"
 	"sync"
@@ -89,26 +90,73 @@ func (index *InvertIndex[T]) GetColliding() int {
 	return index.hashMap.Colliding
 }
 
-func (index *InvertIndex[T]) Search(str string) *l.LinkedList[T] {
+func (index *InvertIndex[T]) Search(str string) []T {
+	matchs := make([]T, 0)
+
 	words := strings.Split(str, " ")
+	length := len(words)
 
-	start := time.Now()
-
-	for _, word := range words {
-		l := index.Get(word)
-		fmt.Println("array encontrado con ", l.Size(), word)
+	type KeyCount struct {
+		count []int
+		value *T
 	}
-	elapsed := time.Since(start)
 
-	fmt.Println("Demoro en buscar ", len(words), " palabras ", elapsed.Microseconds(), "Microseconds")
+	hashMap := h.NewHashMap[KeyCount](length * 2)
 
-	return nil
+	for i, word := range words {
+		l := index.Get(word)
+
+		if l == nil {
+			continue
+		}
+
+		l.ForEach(func(song *T, _ int) {
+			keyCount := hashMap.Get(fmt.Sprintf("%p", song))
+
+			if keyCount == nil {
+				listCount := make([]int, length)
+				listCount[i] = 1
+
+				keyCount = &KeyCount{
+					count: listCount,
+					value: song,
+				}
+
+				hashMap.Put(fmt.Sprintf("%p", song), keyCount)
+				return
+			}
+
+			keyCount.count[i] += 1
+
+			hashMap.Put(fmt.Sprintf("%p", song), keyCount)
+		})
+	}
+
+	hashMap.ForEach(func(node *nodehash.NodeHash[string, KeyCount], count int) {
+		matchCount := true
+
+		for _, c := range node.GetValue().count {
+			if c < 1 {
+				matchCount = false
+			}
+		}
+
+		if matchCount {
+			matchs = append(matchs, *node.GetValue().value)
+		}
+	})
+
+	return matchs
 }
 
 func (index *InvertIndex[T]) Get(key string) *l.LinkedList[T] {
 	key = strings.ToLower(key)
 
 	key = ClearWord(key)
+
+	if key == "" {
+		return nil
+	}
 
 	return index.hashMap.Get(key)
 }
