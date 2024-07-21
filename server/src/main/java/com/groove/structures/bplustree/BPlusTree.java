@@ -1,6 +1,6 @@
-package bplustree;
+package com.groove.structures.bplustree;
 
-import lists.*;
+import com.groove.structures.lists.*;
 
 public class BPlusTree<K extends Comparable<K>, V>  {
   public static class BPlusNode {

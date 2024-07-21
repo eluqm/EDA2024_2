@@ -1,4 +1,4 @@
-package lists;
+package com.groove.structures.lists;
 
 import java.util.Iterator;
 
