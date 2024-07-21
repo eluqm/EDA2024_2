@@ -1,6 +1,7 @@
 package com.groove.structures.lists;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class ArrayList<T> implements Iterable<T> {
   private static final int DEFAULT_CAPACITY = 10;
@@ -143,16 +144,20 @@ public class ArrayList<T> implements Iterable<T> {
   }
 
   private class ArrayListIterator implements Iterator<T> {
+    private int current = 0;
+
     public boolean hasNext() {
-      return false;
+      return current < size();
     }
 
     public T next() {
-      return null;
+      if(!hasNext())
+        throw new NoSuchElementException();
+      return items[current++];
     }
 
     public void remove() {
-      ;
+      ArrayList.this.remove(--current);
     }
   }
 }
