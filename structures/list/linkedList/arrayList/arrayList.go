@@ -63,3 +63,28 @@ func (list *ArrayList[T]) Remove(index int) (T, error) {
 	list.elements = append(list.elements[:index], list.elements[index+1:]...)
 	return removed, nil
 }
+
+// Verifica si la lista contiene el elemento especificado.
+func (list *ArrayList[T]) Contains(data T, equals func(a, b T) bool) bool {
+	for _, e := range list.elements {
+		if equals(e, data) {
+			return true
+		}
+	}
+	return false
+}
+
+// Devuelve el índice del primer elemento que coincide con el especificado.
+func (list *ArrayList[T]) IndexOf(data T, equals func(a, b T) bool) int {
+	for i, e := range list.elements {
+		if equals(e, data) {
+			return i
+		}
+	}
+	return -1
+}
+
+// IsEmpty verifica si la lista está vacía.
+func (list *ArrayList[T]) IsEmpty() bool {
+	return len(list.elements) == 0
+}
