@@ -2,7 +2,7 @@ package arraylist
 
 import (
 	"errors"
-	// "fmt"
+	"fmt"
 )
 
 type ArrayList[T any] struct {
@@ -87,4 +87,27 @@ func (list *ArrayList[T]) IndexOf(data T, equals func(a, b T) bool) int {
 // IsEmpty verifica si la lista está vacía.
 func (list *ArrayList[T]) IsEmpty() bool {
 	return len(list.elements) == 0
+}
+
+// Clear elimina todos los elementos de la lista.
+func (list *ArrayList[T]) Clear() {
+	list.elements = make([]T, 0)
+}
+
+// ForEach itera sobre todos los elementos en la lista y aplica la función especificada.
+func (list *ArrayList[T]) ForEach(function func(data T, index int)) {
+	for i, e := range list.elements {
+		function(e, i)
+	}
+}
+
+// Print imprime todos los elementos de la lista.
+func (list *ArrayList[T]) Print() {
+	if len(list.elements) == 0 {
+		fmt.Println("Empty list")
+		return
+	}
+	for _, e := range list.elements {
+		fmt.Println(e)
+	}
 }
