@@ -1,14 +1,17 @@
 import { SongType } from '@/types/song';
 import { convertirMilisegundos } from '@/lib/utils';
-import { PlusIcon } from 'lucide-react';
+import { MinusIcon } from 'lucide-react';
 import { Button } from './button';
 import { usePlayList } from '../providers/PlayListProvider';
 
-export default function Song({ song, index }: { song: SongType, index: number }) {
-  const { putSong } = usePlayList();
+export default function PlayListSong({ song, index }: { song: SongType, index: number }) {
+  const { removeSong } = usePlayList();
 
   return (
     <div className="flex border-t border-border py-3 px-6 gap-4 items-center">
+      <span className="overflow-x-hidden text-nowrap w-full max-w-8">
+        {index + 1}
+      </span>
       <h1 className="overflow-x-hidden text-nowrap w-full">{song.TrackName}</h1>
       <h2 className="w-full max-w-64 overflow-x-hidden text-nowrap">{song.ArtistName}</h2>
       <h2 className="w-full max-w-24 text-center">{song.Popularity}</h2>
@@ -19,10 +22,10 @@ export default function Song({ song, index }: { song: SongType, index: number })
           variant="outline"
           size="icon"
           onClick={() => {
-            putSong(index);
+            removeSong(index);
           }}
         >
-          <PlusIcon className="w-4" />
+          <MinusIcon className="w-4" />
         </Button>
       </div>
     </div>

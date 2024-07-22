@@ -1,63 +1,31 @@
+import SearchModal from '@/components/searchModal';
+import SongList from '@/components/SongList';
 import { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { SearchSongInIndexInvert, SearchSongInTrie } from '../wailsjs/go/main/App';
-import Browser from './components/browsers/Browser';
-import { ResultType } from './types/result';
+import { Button } from './components/ui/button';
+import PlayList from './components/PlayList';
 
 function App() {
-  const [input, setInput] = useState('');
-
-  const initResult: ResultType = {
-    Songs: [],
-    TimeLapse: 0,
-    Size: 0,
-  };
-
-  const [resultInvertIndex, setResultInvertIndex] = useState<ResultType>(initResult);
-  const [resultTrie, setResultTrie] = useState<ResultType>(initResult);
-
-  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (input.trim() === '') {
-      setResultInvertIndex(initResult);
-      setResultTrie(initResult);
-      return;
-    }
-
-    const rTrie = await SearchSongInTrie(input) as ResultType;
-    const rInvertIndex = await SearchSongInIndexInvert(input) as ResultType;
-
-    setResultInvertIndex(rInvertIndex);
-    setResultTrie(rTrie);
-  };
+  const [path, setPath] = useState<'playlist' | 'list'>('list');
 
   return (
     <div className="w-full flex flex-col gap-10 items-center justify-start py-10 px-6 flex-1">
-      <form onSubmit={handleSearch} className="flex flex-col  w-full max-w-lg gap-2">
-        <h1 className="text-2xl font-bold uppercase text-center w-full">
+      <div className="w-full flex justify-between px-6">
+        <h1 className="text-2xl font-bold uppercase text-start">
           Search for name of the song
         </h1>
-        <div className="flex w-full gap-4">
-          <Input onChange={(e) => setInput(e.target.value)} value={input} />
-          <Button type="submit">Search</Button>
+        <div className="flex gap-4">
+          <Button variant={path === 'playlist' ? 'default' : 'outline'} onClick={() => setPath('playlist')}>
+            PlayList
+          </Button>
+          <Button variant={path === 'list' ? 'default' : 'outline'} onClick={() => setPath('list')}>
+            List
+          </Button>
+          <SearchModal />
         </div>
-      </form>
-      <div className="w-full grid grid-cols-2 max-w-7xl border border-border rounded-xl min-h-[70vh]">
-        <Browser
-          result={resultInvertIndex.Songs}
-          title="Invert index"
-          timeLapse={resultInvertIndex.TimeLapse}
-          size={resultInvertIndex.Size}
-        />
-        <Browser
-          result={resultTrie.Songs}
-          title="Trie"
-          timeLapse={resultTrie.TimeLapse}
-          size={resultTrie.Size}
-        />
       </div>
+      {
+        path === 'playlist' ? <PlayList /> : <SongList />
+      }
     </div>
   );
 }

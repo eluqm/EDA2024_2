@@ -28,11 +28,11 @@ export default function Browser({
           Artist Name
         </span>
         <span className="flex justify-end items-center">
-          Track Id
+          Popularity
         </span>
       </div>
-      {result.map((song) => (
-        <Song key={song.TrackId} song={song} />
+      {result.map((song, index) => (
+        <Song key={song.TrackId} song={song} index={index} />
       ))}
     </div>
   );
