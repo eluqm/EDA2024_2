@@ -1,5 +1,7 @@
 package bplusnode
 
+import "fmt"
+
 type BplusNode[K any, V any] struct {
 	Grade  int
 	Keys   []*K
@@ -85,16 +87,16 @@ func (bplusNode *BplusNode[K, V]) PrintNode(tabs int) {
 		tabsStr += "\t"
 	}
 
-	println("------------------------", bplusNode.Count)
+	fmt.Println("------------------------", bplusNode.Count)
 	for i := 0; i < bplusNode.Count; i++ {
 		if bplusNode.Keys[i] == nil {
 			break
 		}
-		print(tabsStr, *bplusNode.Keys[i])
+		fmt.Print(tabsStr, *bplusNode.Keys[i])
 		if bplusNode.Values != nil {
-			print(" -> ", *bplusNode.Values[i])
+			fmt.Print(" -> ", *bplusNode.Values[i])
 		}
-		println()
+		fmt.Println()
 	}
 	if bplusNode.Childs != nil {
 		for i := 0; i < bplusNode.Count; i++ {

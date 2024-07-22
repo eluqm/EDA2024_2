@@ -183,3 +183,30 @@ func (bplus *Bplus[K, V]) PrintLinkedList() {
 		node = node.Next
 	}
 }
+
+func (bplus *Bplus[K, V]) GetArray() []V {
+	res := make([]V, 0)
+
+	if bplus.FirstSheet == nil {
+		return res
+	}
+
+	node := bplus.FirstSheet
+
+	for {
+		if node == nil {
+			break
+		}
+
+		for _, v := range node.Values {
+			if v == nil {
+				break
+			}
+			res = append(res, *v)
+		}
+
+		node = node.Next
+	}
+
+	return res
+}
