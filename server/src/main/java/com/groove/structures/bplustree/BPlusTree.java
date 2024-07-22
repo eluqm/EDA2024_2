@@ -1,10 +1,14 @@
 package com.groove.structures.bplustree;
 
-import com.groove.structures.lists.*;
-
 public class BPlusTree<K extends Comparable<K>, V>  {
-  public static class BPlusNode {
-    ArrayList<Integer> items;
-    ArrayList<BPlusNode> links;
+  private BPlusNode<K, V> root;
+  private final int branchingFactor;
+
+  public BPlusTree(int branchingFactor) {
+    if (branchingFactor < 3)
+      throw new IllegalArgumentException("The branching factor must be at least 3.");
+
+    this.branchingFactor = branchingFactor;
+    this.root = new BPlusNode<>(true);
   }
 }
