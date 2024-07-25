@@ -73,9 +73,15 @@ export default function SongList() {
               <SelectGroup>
                 <SelectLabel>Page</SelectLabel>
                 {
-                  Array.from({ length: Math.floor(resultByOrder.Size / 200) }, (_, i) => (
+                  Array.from({ length: 100 }, (_, i) => (
                     <SelectItem key={i} value={`${i}`}>{i + 1}</SelectItem>
                   ))
+                }
+                {
+                  Array.from({ length: 100 }, (_, i) => {
+                    const num = Math.floor(resultByOrder.Size / 200) - 100;
+                    return <SelectItem key={num + i} value={`${num + i}`}>{num + i + 1}</SelectItem>;
+                  })
                 }
               </SelectGroup>
             </SelectContent>

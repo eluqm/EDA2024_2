@@ -17,7 +17,17 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { convertirMilisegundos } from '@/lib/utils';
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   SearchSongInIndexInvert,
+  SearchSongInTrie,
 } from '../../wailsjs/go/main/App';
 import { usePlayList } from './providers/PlayListProvider';
 
@@ -32,6 +42,7 @@ export default function SearchModal() {
   const [input, setInput] = useState('');
 
   const { putSong } = usePlayList();
+  const [browser, setBrowser] = useState(1);
 
   const [resultInvertIndex, setResultInvertIndex] = useState<ResultType>(initResult);
 
@@ -55,9 +66,11 @@ export default function SearchModal() {
       return;
     }
 
-    const rInvertIndex = await SearchSongInIndexInvert(input) as ResultType;
+    let result;
+    if (browser === 1)result = await SearchSongInTrie(input) as ResultType;
+    else result = await SearchSongInIndexInvert(input) as ResultType;
 
-    setResultInvertIndex(rInvertIndex);
+    setResultInvertIndex(result);
   };
 
   return (
@@ -71,7 +84,34 @@ export default function SearchModal() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-5xl bg-accent">
           <DialogHeader>
-            <DialogTitle>Busca tu producto favorito</DialogTitle>
+            <div className="w-full flex justify-between items-center">
+              <DialogTitle>Busca tu producto favorito</DialogTitle>
+              <div className="flex gap-8 items-center">
+                <Select onValueChange={(e) => setBrowser(Number(e))}>
+                  <SelectTrigger className="w-[150px]">
+                    <SelectValue placeholder="Tree" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Select</SelectLabel>
+                      <SelectItem value="1">Tree</SelectItem>
+                      <SelectItem value="2">Invert indexes</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <span>
+                  Time:
+                  {' '}
+                  {resultInvertIndex.TimeLapse}
+                  ms
+                </span>
+                <span>
+                  Size:
+                  {' '}
+                  {resultInvertIndex.Size}
+                </span>
+              </div>
+            </div>
           </DialogHeader>
           <div className="flex flex-col gap-4">
             <form onSubmit={handleSearch} className="border-primary rounded-sm border bg-background flex h-14 items-center">

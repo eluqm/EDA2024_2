@@ -72,7 +72,7 @@ func (a *App) startup(ctx context.Context) {
 		a.BplusDuration.Add(s.DurationMs, s)
 	}
 
-	err := rd.ReadCSV(f, 100)
+	err := rd.ReadCSV(f, -1)
 	if err != nil {
 		panic(err)
 	}
